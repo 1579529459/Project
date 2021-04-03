@@ -1,0 +1,128 @@
+#-*- codeing = utf-8 -*-
+#@Time : 2020/3/3 17:51
+#@Author : 李巍
+#@File : spider.py
+#@Software: PyCharm
+
+from bs4 import BeautifulSoup     #网页解析，获取数据
+import re       #正则表达式，进行文字匹配
+import urllib.request,urllib.error      #制定URL，获取网页数据
+import xlwt     #进行excel操作
+import sqlite3  #进行SQLite数据库操作
+import requests
+import os
+
+baseurl = "https://www.hanjutv2020.com/player/35642.html"
+
+
+def main():
+    
+    #1.爬取网页
+    datalist = getData(baseurl)
+
+
+    download()
+     
+   
+    
+   
+    
+    #2.影片图片链接入表
+    
+
+    #download()
+
+#====================================解析数据部分======================================================
+
+def getData(baseurl):
+    datalist = []
+    for i in range(1):       #调用获取页面信息的函数，10次
+        url = baseurl
+        html = askURL(url)#保存获取到的网页源码
+       #print(html)
+        #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        () # 2.逐一解析数据
+        soup = BeautifulSoup(html,"html.parser")
+       # print(soup)
+        for item in soup.find_all('img',class_="quic lazy"):     #查找符合要求的字符串，形成列表
+            #print(item)   #测试：查看电影item全部信息
+            data = []    #保存一部电影的所有信息
+            item = str(item)
+
+         
+
+            imgSrc = re.findall(findImgSrc,item)[0]
+            data.append(imgSrc)#添加图片
+
+
+
+         
+
+   
+
+            datalist.append(data)#把处理好的一部电影信息放入datalist
+            #print(datalist)
+
+    return datalist
+
+#====================================================================================================
+
+
+#=================================    下载部分   ==================================================
+def download():
+
+ 
+    
+    datalist = getData(baseurl)
+    #print(datalist)
+   
+
+    i=0
+    for j in range(len(datalist)):
+
+        url=datalist[j][0]
+
+        d='C:\\tu\\'
+
+        path=d+url.split('/')[-1]
+
+        try:
+
+            if not os.path.exists(d):
+
+                os.mkdir(d)
+
+            if not os.path.exists(path):
+
+                print("正在下载第%d张图片.........."%(j+1))
+
+                r=requests.get(url)
+
+                #r.raise_for_status()
+               
+
+                with open(path,'wb') as f:
+
+                    f.write(r.content)
+
+                    f.close()
+
+                    print("图片保存成功！")
+                    i+=1
+
+            else:
+
+                print("图片已存在！")
+                i+=1
+
+        except:
+
+            print("图片获取失败！")
+            i+=1
+
+    path = r'C:\tu'
+    os.startfile(path)
+
+#====================================================================================================
+
+    
