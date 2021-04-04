@@ -40,10 +40,10 @@ def main():
 
 def getData(baseurl): 
     
+    #记录已经爬取的网页码(共五位)：786( 25-99)
 
-
-    start="25"#起始网站尾标*********************************************************************************************
-    a=10       #a调用获取页面信息的函数，10次********一次大概3-4张 ***********************************************************
+    start="75"#起始网站尾标*********************************************************************************************
+    a=26     #a调用获取页面信息的函数，10次********一次大概3-4张 ***********************************************************
 
 
 
@@ -52,7 +52,7 @@ def getData(baseurl):
 
 
     datalist = []
-      
+     
     for i in range(a):      
         url = baseurl+start
 
@@ -154,18 +154,25 @@ def download():
 
 def askURL(url):
 
+    try:
 
-    head = {                
-            "User-Agent": "Mozilla / 5.0(Windows NT 10.0; Win64; x64) AppleWebKit / 537.ome / 80.0.3987.122  Safari / 537.36"
-    }
+        head = {                
+                "User-Agent": "Mozilla / 5.0(Windows NT 10.0; Win64; x64) AppleWebKit / 537.ome / 80.0.3987.122  Safari / 537.36"
+        }
                             
 
-    request = urllib.request.Request(url,headers=head)
+        request = urllib.request.Request(url,headers=head)
 
-    html = ""
+        html = ""
  
-    response = urllib.request.urlopen(request)
-    html = response.read().decode("utf-8")
+        response = urllib.request.urlopen(request)
+        html = response.read().decode("utf-8")
+    except Exception :
+        pass
+
+
+
+        
        
    
     return html
