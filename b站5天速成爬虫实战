@@ -9,92 +9,76 @@ import re       #正则表达式，进行文字匹配
 import urllib.request,urllib.error      #制定URL，获取网页数据
 import xlwt     #进行excel操作
 import sqlite3  #进行SQLite数据库操作
-import requests
 import os
 import time
-
-
-baseurl = "https://5grvlb.xyz:1443/h/786"  #目标网站框架*******************************************
+import requests
 findImgSrc=re.compile(r'<img.*="(.*?)"',re.S)
 
-
-
+baseurl = "https://5grvlb.xyz:1443/h/787"
 def main():
-    
+    baseurl = "https://5grvlb.xyz:1443/h/787"
     #1.爬取网页
-    datalist = getData(baseurl)
-
-
-    download()
-     
+    download()  ##其中就有 发出请求 解析下载链接的过程！
    
-    
    
-    
-    #2.影片图片链接入表
-    
-
-    #download()
-
-#====================================解析数据部分=======================================
-
-def getData(baseurl): 
-    
-    #记录已经爬取的网页码(共五位)：786( 25-99)
-
-    start="75"#起始网站尾标*********************************************************************************************
-    a=26     #a调用获取页面信息的函数，10次********一次大概3-4张 ***********************************************************
+ 
+  #
 
 
 
-
-
-
-
+#爬取网页
+def getData(baseurl):
+    start="20"
     datalist = []
-     
-    for i in range(a):      
-        url = baseurl+start
-
-
+    for i in range(2):       #调用获取页面信息的函数，10次
+        url = baseurl + start
+        html = askURL(url)      #保存获取到的网页源码
         start=str(int(start)+1)
-       
-    
-        
-        
-        
-        
-        html = askURL(url)#保存获取到的网页源码
-       
-       
-         # 2.逐一解析数据
+        print(start)
+         
         soup = BeautifulSoup(html,"html.parser")
-        
         for item in soup.find_all('img'):     #查找符合要求的字符串，形成列表
-            print(item)   #测试：查看电影item全部信息
+            #print(item)   #测试：查看电影item全部信息
             data = []    #保存一部电影的所有信息
             item = str(item)
 
          
 
             imgSrc = re.findall(findImgSrc,item)[0]
-            #print(imgSrc)
-            data.append(imgSrc)#添加图片              
+            data.append(imgSrc)                     #添加图片
 
-            datalist.append(data)#把处理好的一部电影信息放入datalist
-            #print(datalist)
-            #1print("\n")
-        print("\n\n")
-       
         
-       
+
+            datalist.append(data)       #把处理好的一部电影信息放入datalist
 
     return datalist
 
-#====================================================================================================
 
 
-#=================================    下载部分   ==================================================
+#得到指定一个URL的网页内容
+def askURL(url):
+    head = {                #模拟浏览器头部信息，向豆瓣服务器发送消息
+        "User-Agent": "Mozilla / 5.0(Windows NT 10.0; Win64; x64) AppleWebKit / 537.36(KHTML, like Gecko) Chrome / 80.0.3987.122  Safari / 537.36"
+    }
+                            #用户代理，表示告诉豆瓣服务器，我们是什么类型的机器、浏览器（本质上是告诉浏览器，我们可以接收什么水平的文件内容）
+
+    request = urllib.request.Request(url,headers=head)
+    html = ""
+    try:
+        response = urllib.request.urlopen(request)
+        html = response.read().decode("utf-8")
+        #print(html)
+    except Exception as e:
+        pass
+    return html
+
+
+
+
+#保存数据
+
+
+
 def download():
     t3=time.time()
 
@@ -151,43 +135,8 @@ def download():
 #====================================================================================================
 
 
-
-def askURL(url):
-
-    try:
-
-        head = {                
-                "User-Agent": "Mozilla / 5.0(Windows NT 10.0; Win64; x64) AppleWebKit / 537.ome / 80.0.3987.122  Safari / 537.36"
-        }
-                            
-
-        request = urllib.request.Request(url,headers=head)
-
-        html = ""
- 
-        response = urllib.request.urlopen(request)
-        html = response.read().decode("utf-8")
-    except Exception :
-        pass
-
-
-
-        
-       
-   
-    return html
-
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":          #当程序执行时
 #调用函数
     main()
     #init_db("movietest.db")
-    
+    print("爬取完毕！")
