@@ -1,0 +1,155 @@
+
+from urllib import request
+from lxml import html
+from lxml import etree
+import requests
+import os
+from fake_useragent import UserAgent
+import time
+etree = html.etree
+
+
+ 
+n=3      #爬取页数       推荐1  共12页网页
+
+value=0
+
+
+
+s_1="https://pic.netbian.com"
+
+
+def download():
+     
+    
+    
+    
+        #print(tu[j])
+        #print(s)    #检查图片完整路径
+        
+        
+    url=s_1+tu[0]
+        #print(url)   #检查图片完整路径
+        #break
+
+    d='C:\\meitu\\'
+
+    path=d+url.split('/')[-1]
+
+     
+
+    if not os.path.exists(d):
+
+        os.mkdir(d)
+        print("创建本地图库成功！！")
+
+    if not os.path.exists('C:\\meitu\\'+mz+'.jpg'):
+
+        print(">>正在下载---第%d页---第%d张图片......>>>>>>%s"%(yema,zhang,mz))
+            
+        r=requests.get(url)
+            
+       
+               
+
+        with open('C:\\meitu\\'+mz+'.jpg','wb') as f:
+
+            f.write(r.content)
+
+            f.close()
+
+            print(">>>---第%d页---第%d张---图片下载并存入本地图库成功！\n"%(yema,zhang))
+            
+              
+
+    else:
+        print(">>>---第%d页--第%d张---图片已存在！！！！\n"%(yema,zhang))   #下载工作
+    
+
+
+
+
+
+while value<n:
+    yema=value+1
+    if value == 0:
+        baseurl = "https://pic.netbian.com/4kmeinv/index.html"
+    else:
+  
+        baseurl = "https://pic.netbian.com/4kmeinv/index_"+str(yema)+".html"  
+   
+    
+  
+    headers={'User-Agent':UserAgent().random}
+
+
+
+        
+   
+    rq=requests.get(baseurl,headers=headers)
+    
+    rq.encoding=("gbk")
+    
+    #print(rq.text)
+    #break
+ 
+    s=etree.HTML(rq.text)
+
+   
+   
+
+    
+       
+    s = s.xpath('//div[@id="main"]//li/a/@href')
+    zhang = 1    #每页从第一张开始下载！！
+    for i in s:
+        url_1=s_1+i
+        rq=requests.get(url_1,headers=headers)
+    
+        rq.encoding=("gbk")
+    
+        #print(rq.text)
+        #break
+ 
+        s=etree.HTML(rq.text)
+
+
+   
+             
+        tu = s.xpath('//a[@id="img"]/img/@src')
+        #print(tu)
+        #break
+  
+
+    
+    
+        mz = s.xpath('//a[@id="img"]/img/@alt')
+    #print(mz)
+    #break
+     
+
+        mz=mz[0]
+   
+        
+        download()
+        zhang+=1
+  
+        
+        
+    value+=1
+    yema+=1    #获取当前页面下进入每套套图的链接（一页30套！）
+    #except Exception:
+        #pass
+
+        
+        
+
+
+                                                           
+
+
+
+print("爬取完毕！！3秒后将打开本地图库.....")  #收尾工作
+time.sleep(3)
+path = r'C:\meitu'
+os.startfile(path)  
