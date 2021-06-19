@@ -14,7 +14,7 @@ n=1  #爬取页数       推荐1  共12页网页
 list_url=[]
 value=0
 
-
+./
 
 
 def download():
