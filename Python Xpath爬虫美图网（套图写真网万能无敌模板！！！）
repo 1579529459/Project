@@ -15,7 +15,7 @@ list_url=[]
 value=0
 
 ./
-
+、
 
 def download():
      
